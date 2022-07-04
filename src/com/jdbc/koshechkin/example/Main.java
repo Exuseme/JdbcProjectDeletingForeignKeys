@@ -9,7 +9,7 @@ public class Main {
     public static void main(String[] args) {
 
         String select = """
-                SELECT * FROM company_storage.company;
+                SELECT c.id, c.name, c.data FROM company_storage.company c;
                 """;
 
         try (var con = ConnectionToDateBase.open();
