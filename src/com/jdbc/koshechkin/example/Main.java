@@ -8,7 +8,7 @@ import java.sql.SQLException;
 public class Main {
     public static void main(String[] args) {
 
-        String select = """
+        var select = """
                 SELECT c.id, c.name, c.data FROM company_storage.company c;
                 """;
 
