@@ -11,7 +11,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$USER_HOME$/OneDrive/Рабочий стол/postgresql-42.4.0.jar!/" />
+          <root url="jar://$USER_HOME$/OneDrive/Рабочий стол/Core/postgresql-42.4.0.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />

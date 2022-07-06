@@ -2,26 +2,58 @@ package com.jdbc.koshechkin.example;
 
 import com.jdbc.koshechkin.example.getConnection.ConnectionToDateBase;
 import com.jdbc.koshechkin.example.throwException.sqlRuntimeException;
+import com.sun.source.tree.Tree;
 
-import java.sql.SQLException;
+import java.sql.*;
+import java.util.*;
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws SQLException {
 
-        var select = """
-                SELECT c.id, c.name, c.data FROM company_storage.company c;
+        Integer id = 8;
+        String deleteToCompany = """
+                DELETE FROM company_storage.company WHERE id = ?;
+                """;
+        String deleteToEmployee = """
+                DELETE FROM company_storage.employee WHERE company_id = ?;
                 """;
 
-        try (var con = ConnectionToDateBase.open();
-             var preparedStatement = con.prepareStatement(select)) {
-            var result = preparedStatement.executeQuery();
-            while (result.next()) {
-                System.out.println(result.getInt("id") + ":"
-                        + result.getString("name")
-                        + ":" + result.getDate("data"));
-            }
+        Connection connection = null;
+        PreparedStatement preparedStatementCompany = null;
+        PreparedStatement preparedStatementEmployee = null;
+        try {
+            connection = ConnectionToDateBase.open();
+            preparedStatementEmployee = connection.prepareStatement(deleteToEmployee);
+            preparedStatementCompany = connection.prepareStatement(deleteToCompany);
+
+            connection.setAutoCommit(false);
+
+            preparedStatementEmployee.setInt(1, id);
+            preparedStatementCompany.setInt(1, id);
+
+
+            preparedStatementEmployee.executeUpdate();
+
+            preparedStatementCompany.executeUpdate();
+
+
+            connection.commit();
+
+
         } catch (SQLException e) {
-            throw new sqlRuntimeException(e);
+            if (connection != null) {
+                connection.rollback();
+            }
+            throw e;
+        } finally {
+            if (connection != null)
+                connection.close();
+            if (preparedStatementCompany != null) {
+                preparedStatementCompany.close();
+            }
+            if (preparedStatementEmployee != null) {
+                preparedStatementEmployee.close();
+            }
         }
     }
 }
